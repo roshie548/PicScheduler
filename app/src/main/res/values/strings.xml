@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">PicScheduler</string>
+    <string name="txt_message">Hello!</string>
+</resources>
