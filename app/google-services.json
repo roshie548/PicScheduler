@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "42899193325",
+    "firebase_url": "https://picscheduler-57d14.firebaseio.com",
+    "project_id": "picscheduler-57d14",
+    "storage_bucket": "picscheduler-57d14.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:42899193325:android:71b15e50aa9d726f",
+        "android_client_info": {
+          "package_name": "com.roshan.android.picscheduler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "42899193325-717q3vrfkdidb3d9b715bfk62b4f7o5c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCh4Jo3XC5AyW8s5GLqn7G6d9rLfOp2jo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
