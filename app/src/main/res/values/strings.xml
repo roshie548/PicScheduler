@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PicScheduler</string>
-    <string name="txt_message">Hello!</string>
+    <string name="low_storage_error">Low Storage!</string>
+    <string name="txt">text!!</string>
 </resources>
