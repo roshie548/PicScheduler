@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.camerakit.CameraKitView;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -58,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
                         bitmap = Bitmap.createScaledBitmap(bitmap, mCameraView.getWidth(), mCameraView.getHeight(), false);
                     }
                 });
+
+                Intent intent = new Intent(MainActivity.this.getApplicationContext(), ImageDetectActivity.class);
+                startActivity(intent);
+                //TODO: Launch new activity, pass the bitmap
             }
         });
     }
