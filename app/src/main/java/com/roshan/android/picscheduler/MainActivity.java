@@ -9,7 +9,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +21,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.camerakit.CameraKitView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.IOException;
 
@@ -29,7 +37,11 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.camera) CameraKitView mCameraView;
-    @BindView(R.id.camera_button) Button mCameraButton;
+    @BindView(R.id.camera_button) FloatingActionButton mCameraButton;
+//    @BindView(R.id.camera_button) Button mCameraButton;
+
+    private byte[] imageBytes;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,17 +65,23 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
                 mCameraView.captureImage(new CameraKitView.ImageCallback() {
                     @Override
                     public void onImage(CameraKitView cameraKitView, byte[] bytes) {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        bitmap = Bitmap.createScaledBitmap(bitmap, mCameraView.getWidth(), mCameraView.getHeight(), false);
+                        imageBytes = bytes;
+
                     }
                 });
 
                 Intent intent = new Intent(MainActivity.this.getApplicationContext(), ImageDetectActivity.class);
+                intent.putExtra("CapturedImage", imageBytes);
+                intent.putExtra("width", mCameraView.getWidth());
+                intent.putExtra("height", mCameraView.getHeight());
                 startActivity(intent);
+
                 //TODO: Launch new activity, pass the bitmap
+                // Maybe use Fragments instead of new activity?
             }
         });
     }

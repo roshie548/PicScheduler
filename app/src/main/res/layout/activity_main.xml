@@ -16,11 +16,23 @@
         app:camera_permissions="camera"
         />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Identify"
+
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Identify"-->
+        <!--android:id="@+id/camera_button"-->
+        <!--android:layout_gravity="bottom"/>-->
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/camera_button"
-        android:layout_gravity="bottom"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        app:fabSize="normal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/outline_camera"
+        android:tint="@android:color/white"
+        android:layout_margin="16dp" />
 
 </FrameLayout>
