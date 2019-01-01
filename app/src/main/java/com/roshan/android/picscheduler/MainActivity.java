@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -71,14 +72,13 @@ public class MainActivity extends AppCompatActivity {
                     public void onImage(CameraKitView cameraKitView, byte[] bytes) {
                         imageBytes = bytes;
 
+                        Intent intent = new Intent(MainActivity.this.getApplicationContext(), ImageDetectActivity.class);
+                        intent.putExtra("CapturedImage", imageBytes);
+                        intent.putExtra("width", mCameraView.getWidth());
+                        intent.putExtra("height", mCameraView.getHeight());
+                        startActivity(intent);
                     }
                 });
-
-                Intent intent = new Intent(MainActivity.this.getApplicationContext(), ImageDetectActivity.class);
-                intent.putExtra("CapturedImage", imageBytes);
-                intent.putExtra("width", mCameraView.getWidth());
-                intent.putExtra("height", mCameraView.getHeight());
-                startActivity(intent);
 
                 //TODO: Launch new activity, pass the bitmap
                 // Maybe use Fragments instead of new activity?

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,15 +23,23 @@
         <!--android:id="@+id/camera_button"-->
         <!--android:layout_gravity="bottom"/>-->
 
+    <android.support.design.bottomappbar.BottomAppBar
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:backgroundTint="@color/colorPrimary"/>
+
+
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/camera_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        app:fabSize="normal"
-        android:scaleType="fitCenter"
+        app:fabSize="auto"
         android:src="@drawable/outline_camera"
         android:tint="@android:color/white"
-        android:layout_margin="16dp" />
+        app:layout_anchor="@id/bar"/>
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

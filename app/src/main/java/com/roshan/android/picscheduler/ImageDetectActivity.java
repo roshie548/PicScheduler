@@ -37,28 +37,26 @@ public class ImageDetectActivity extends AppCompatActivity {
         cameraWidth = intent.getIntExtra("width", 0);
         cameraHeight = intent.getIntExtra("height", 0);
 
-//        Log.d("TEXT", imageBytes.toString());
-//
-//        bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-//        bitmap = Bitmap.createScaledBitmap(bitmap, cameraWidth, cameraHeight, false);
+        bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        bitmap = Bitmap.createScaledBitmap(bitmap, cameraWidth, cameraHeight, false);
 
-//        image = FirebaseVisionImage.fromBitmap(bitmap);
-//        detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
-//
-//        result = detector.processImage(image)
-//                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-//                    @Override
-//                    public void onSuccess(FirebaseVisionText firebaseVisionText) {
-//                        String resultText = firebaseVisionText.getText();
-//                        Log.d("TEST", resultText);
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//
-//                    }
-//                });
+        image = FirebaseVisionImage.fromBitmap(bitmap);
+        detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+
+        result = detector.processImage(image)
+                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                    @Override
+                    public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                        String resultText = firebaseVisionText.getText();
+                        Log.d("TEST", resultText);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
 }
