@@ -1,19 +1,23 @@
 package com.roshan.android.picscheduler;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.camera) CameraKitView mCameraView;
     @BindView(R.id.camera_button) FloatingActionButton mCameraButton;
-//    @BindView(R.id.camera_button) Button mCameraButton;
 
     private byte[] imageBytes;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
 
     @Override
@@ -49,6 +54,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (sharedPreferences.getBoolean("loggedIn?", false) == false) {
+            editor = sharedPreferences.edit();
+            editor.putBoolean("loggedIn?", false);
+            editor.apply();
+            login();
+        }
 
         mCameraView.setCameraListener(new CameraKitView.CameraListener() {
             @Override
@@ -76,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("CapturedImage", imageBytes);
                         intent.putExtra("width", mCameraView.getWidth());
                         intent.putExtra("height", mCameraView.getHeight());
-                        startActivity(intent);
+                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
                     }
                 });
 
@@ -114,6 +128,10 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mCameraView.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void login() {
+
     }
 
 }

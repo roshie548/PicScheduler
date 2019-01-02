@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -15,6 +16,9 @@ import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ImageDetectActivity extends AppCompatActivity {
 
@@ -27,10 +31,13 @@ public class ImageDetectActivity extends AppCompatActivity {
     private static int cameraWidth;
     private static int cameraHeight;
 
+    @BindView(R.id.text_view) TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detect);
+        ButterKnife.bind(this);
 
         intent = getIntent();
         imageBytes = intent.getByteArrayExtra("CapturedImage");
@@ -49,6 +56,7 @@ public class ImageDetectActivity extends AppCompatActivity {
                     public void onSuccess(FirebaseVisionText firebaseVisionText) {
                         String resultText = firebaseVisionText.getText();
                         Log.d("TEST", resultText);
+                        textView.setText(resultText);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
