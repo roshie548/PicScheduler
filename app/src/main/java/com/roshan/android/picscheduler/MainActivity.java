@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.camerakit.CameraKitView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -97,7 +98,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (personPhoto != null) {
-            navPicture.setImageURI(personPhoto);
+            Glide.with(this)
+                    .load(personPhoto)
+                    .into(navPicture);
         }
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
