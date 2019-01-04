@@ -18,9 +18,14 @@ import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.camera) CameraKitView mCameraView;
     @BindView(R.id.camera_button) FloatingActionButton mCameraButton;
+    @BindView(R.id.bar) BottomAppBar bottomAppBar;
+    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
 
     private byte[] imageBytes;
     SharedPreferences sharedPreferences;
@@ -54,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        setSupportActionBar(bottomAppBar);
+
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -132,6 +145,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void login() {
 
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
