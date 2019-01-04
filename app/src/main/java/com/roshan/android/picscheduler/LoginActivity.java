@@ -84,6 +84,12 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(GoogleSignInAccount account) {
         if (account != null) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.putExtra(MainActivity.PERSON_NAME, account.getDisplayName());
+            intent.putExtra(MainActivity.PERSON_FAMILY_NAME, account.getGivenName());
+            intent.putExtra(MainActivity.PERSON_GIVEN_NAME, account.getFamilyName());
+            intent.putExtra(MainActivity.PERSON_EMAIL, account.getEmail());
+            intent.putExtra(MainActivity.PERSON_ID, account.getId());
+            intent.putExtra(MainActivity.PERSON_PHOTO, account.getPhotoUrl());
             startActivity(intent);
         }
     }

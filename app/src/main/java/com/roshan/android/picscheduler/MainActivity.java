@@ -11,11 +11,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
@@ -28,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.camerakit.CameraKitView;
@@ -43,6 +46,7 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,11 +54,23 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.camera_button) FloatingActionButton mCameraButton;
     @BindView(R.id.bar) BottomAppBar bottomAppBar;
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
+    @BindView(R.id.nav_view) NavigationView navigationView;
 
     private byte[] imageBytes;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
+    public static String PERSON_NAME = "personName";
+    public static String PERSON_GIVEN_NAME = "personGivenName";
+    public static String PERSON_FAMILY_NAME = "personFamilyName";
+    public static String PERSON_EMAIL = "personEmail";
+    public static String PERSON_ID = "personId";
+    public static String PERSON_PHOTO = "personPhoto";
+
+    private static String personName;
+    private static String personGivenName;
+    private static String personFamilyName;
+    private static Uri personPhoto;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +83,22 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        Intent intent = getIntent();
+        personName = intent.getStringExtra(PERSON_NAME);
+        personPhoto = intent.getParcelableExtra(PERSON_PHOTO);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView navName = headerView.findViewById(R.id.nav_name);
+        CircleImageView navPicture = headerView.findViewById(R.id.nav_picture);
+
+        if (personName != null) {
+            navName.setText(personName);
+        }
+
+        if (personPhoto != null) {
+            navPicture.setImageURI(personPhoto);
+        }
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
