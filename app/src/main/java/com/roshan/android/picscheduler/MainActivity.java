@@ -35,6 +35,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.camerakit.CameraKitView;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -58,15 +64,15 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.nav_view) NavigationView navigationView;
 
     private byte[] imageBytes;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
 
-    public static String PERSON_NAME = "personName";
-    public static String PERSON_GIVEN_NAME = "personGivenName";
-    public static String PERSON_FAMILY_NAME = "personFamilyName";
-    public static String PERSON_EMAIL = "personEmail";
-    public static String PERSON_ID = "personId";
-    public static String PERSON_PHOTO = "personPhoto";
+    public static final String PERSON_NAME = "personName";
+    public static final String PERSON_GIVEN_NAME = "personGivenName";
+    public static final String PERSON_FAMILY_NAME = "personFamilyName";
+    public static final String PERSON_EMAIL = "personEmail";
+    public static final String PERSON_ID = "personId";
+    public static final String PERSON_PHOTO = "personPhoto";
+    public static final String MY_PREFERENCES = "MyPrefs";
+    public static final String SIGNED_IN = "SignedIn";
 
     private static String personName;
     private static String personGivenName;
@@ -78,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+
 
         setSupportActionBar(bottomAppBar);
 
@@ -92,6 +100,23 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         TextView navName = headerView.findViewById(R.id.nav_name);
         CircleImageView navPicture = headerView.findViewById(R.id.nav_picture);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                        menuItem.setChecked(true);
+                        drawerLayout.closeDrawers();
+
+                        switch (menuItem.getItemId()) {
+                            case R.id.sign_out:
+                                signOut();
+                                break;
+                        }
+
+                        return true;
+                    }
+                }
+        );
 
         if (personName != null) {
             navName.setText(personName);
@@ -101,15 +126,6 @@ public class MainActivity extends AppCompatActivity {
             Glide.with(this)
                     .load(personPhoto)
                     .into(navPicture);
-        }
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        if (sharedPreferences.getBoolean("loggedIn?", false) == false) {
-            editor = sharedPreferences.edit();
-            editor.putBoolean("loggedIn?", false);
-            editor.apply();
-            login();
         }
 
         mCameraView.setCameraListener(new CameraKitView.CameraListener() {
@@ -148,6 +164,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void signOut() {
+        SharedPreferences sharedPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SIGNED_IN, false);
+        editor.commit();
+
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -176,10 +202,6 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mCameraView.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private void login() {
-
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
