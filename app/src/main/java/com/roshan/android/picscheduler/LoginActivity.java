@@ -9,9 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -31,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     public GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN;
     private static final String TAG = "Login Activity Error";
-    private static GoogleSignInOptions gso;
+    GoogleSignInOptions gso;
     SharedPreferences sharedPreferences;
 
 
@@ -65,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if (sharedPreferences.getBoolean(MainActivity.SIGNED_IN, false) == false) {
+        if (!sharedPreferences.getBoolean(MainActivity.SIGNED_IN, false)) {
             signOut();
         }
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
@@ -97,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
         if (account != null) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(MainActivity.SIGNED_IN, true);
-            editor.commit();
+            editor.apply();
 
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.putExtra(MainActivity.PERSON_NAME, account.getDisplayName());

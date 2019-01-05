@@ -3,6 +3,8 @@ package com.roshan.android.picscheduler;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +18,9 @@ import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+import com.google.firebase.ml.vision.text.RecognizedLanguage;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,8 +60,25 @@ public class ImageDetectActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(FirebaseVisionText firebaseVisionText) {
                         String resultText = firebaseVisionText.getText();
-                        Log.d("TEST", resultText);
-                        textView.setText(resultText);
+                        for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
+                            String blockText = block.getText();
+                            Float blockConfidence = block.getConfidence();
+                            List<RecognizedLanguage> blockLanguages = block.getRecognizedLanguages();
+                            Point[] blockCornerPoints = block.getCornerPoints();
+                            Rect blockFrame = block.getBoundingBox();
+                            for (FirebaseVisionText.Line line : block.getLines()) {
+                                String lineText = line.getText();
+                                Float lineConfidence = line.getConfidence();
+                                List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
+                                Point[] lineCornerPoints = line.getCornerPoints();
+                                Rect lineFrame = line.getBoundingBox();
+                                textView.append(lineText + "\n\n");
+                            }
+                        }
+
+//                        String resultText = firebaseVisionText.getText();
+//                        Log.d("TEST", resultText);
+//                        textView.setText(resultText);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
