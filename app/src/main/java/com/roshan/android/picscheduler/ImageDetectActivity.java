@@ -72,7 +72,9 @@ public class ImageDetectActivity extends AppCompatActivity {
                                 List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
                                 Point[] lineCornerPoints = line.getCornerPoints();
                                 Rect lineFrame = line.getBoundingBox();
-                                textView.append(lineText + "\n\n");
+                                if (lineText.contains(":")) {
+                                    textView.append(lineText + "\n\n");
+                                }
                             }
                         }
 
