@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
 
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,6 +61,7 @@ public class ImageDetectActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                     @Override
                     public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                        String test = "ak";
                         String resultText = firebaseVisionText.getText();
                         for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
                             String blockText = block.getText();
@@ -74,13 +77,22 @@ public class ImageDetectActivity extends AppCompatActivity {
                                 Rect lineFrame = line.getBoundingBox();
                                 if (lineText.contains(":")) {
                                     textView.append(lineText + "\n\n");
+                                    test = lineText;
                                 }
                             }
                         }
 
-//                        String resultText = firebaseVisionText.getText();
-//                        Log.d("TEST", resultText);
-//                        textView.setText(resultText);
+                        Calendar beginTime = Calendar.getInstance();
+                        beginTime.set(2019, 1, 8, 7, 30);
+                        Calendar endTime = Calendar.getInstance();
+                        endTime.set(2019, 1, 8, 8, 30);
+                        Intent intent = new Intent(Intent.ACTION_INSERT)
+                                .setData(CalendarContract.Events.CONTENT_URI)
+                                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, beginTime.getTimeInMillis())
+                                .putExtra(CalendarContract.Events.TITLE, test)
+                                .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
+                        startActivity(intent);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
