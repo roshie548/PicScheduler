@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,6 +54,7 @@ public class ImageDetectActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initializeData();
 
@@ -106,6 +108,7 @@ public class ImageDetectActivity extends AppCompatActivity {
 //                    }
 //                });
     }
+
 
     private void initializeData() {
         events = new ArrayList<>();

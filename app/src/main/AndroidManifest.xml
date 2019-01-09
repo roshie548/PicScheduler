@@ -25,7 +25,12 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr" />
 
-        <activity android:name=".ImageDetectActivity" />
+        <activity android:name=".ImageDetectActivity"
+            android:theme="@style/Theme.AppCompat">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
         <activity android:name=".LoginActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
