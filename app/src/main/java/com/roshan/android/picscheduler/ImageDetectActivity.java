@@ -58,8 +58,8 @@ public class ImageDetectActivity extends AppCompatActivity {
 
         initializeData();
 
-        RVAdapter adapter = new RVAdapter(events);
-        recyclerView.setAdapter(adapter);
+//        RVAdapter adapter = new RVAdapter(events);
+//        recyclerView.setAdapter(adapter);
 
         intent = getIntent();
         imageBytes = intent.getByteArrayExtra("CapturedImage");
@@ -71,6 +71,41 @@ public class ImageDetectActivity extends AppCompatActivity {
 
         image = FirebaseVisionImage.fromBitmap(bitmap);
         detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+
+        result = detector.processImage(image)
+                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                    @Override
+                    public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                        for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
+                            for (FirebaseVisionText.Line line : block.getLines()) {
+                                String lineText = line.getText();
+                                List<String> times = new ArrayList<>();
+                                for (FirebaseVisionText.Element element : line.getElements()) {
+                                    String elementText = element.getText();
+                                    if (elementText.contains(":")) {
+                                        times.add(elementText);
+                                    }
+                                }
+                                if (!times.isEmpty()) {
+                                    if (times.size() == 2) {
+                                        events.add(new  Event("test", times.get(0), times.get(1)));
+                                    } else if (times.size() == 1) {
+                                        events.add(new Event("test", times.get(0), "10:00"));
+                                    }
+                                }
+                            }
+                        }
+                        RVAdapter adapter = new RVAdapter(events);
+                        recyclerView.setAdapter(adapter);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+        createEvent();
 
 //        result = detector.processImage(image)
 //                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
@@ -125,7 +160,7 @@ public class ImageDetectActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, beginTime.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
                 .putExtra(CalendarContract.Events.TITLE, "test")
                 .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
         startActivity(intent);
