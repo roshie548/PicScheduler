@@ -41,6 +41,8 @@ public class ImageDetectActivity extends AppCompatActivity {
     private static int cameraWidth;
     private static int cameraHeight;
 
+    private List<Event> events;
+
     @BindView(R.id.text_view) TextView textView;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
@@ -114,6 +116,18 @@ public class ImageDetectActivity extends AppCompatActivity {
                 .putExtra(CalendarContract.Events.TITLE, "test")
                 .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
         startActivity(intent);
+    }
+
+    class Event {
+        String eventName;
+        String eventStart;
+        String eventEnd;
+
+        Event(String eventName, String eventStart, String eventEnd) {
+            this.eventName = eventName;
+            this.eventStart = eventStart;
+            this.eventEnd = eventEnd;
+        }
     }
 
 }
