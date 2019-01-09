@@ -61,7 +61,6 @@ public class ImageDetectActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                     @Override
                     public void onSuccess(FirebaseVisionText firebaseVisionText) {
-                        String test = "ak";
                         String resultText = firebaseVisionText.getText();
                         for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
                             String blockText = block.getText();
@@ -77,22 +76,14 @@ public class ImageDetectActivity extends AppCompatActivity {
                                 Rect lineFrame = line.getBoundingBox();
                                 if (lineText.contains(":")) {
                                     textView.append(lineText + "\n\n");
-                                    test = lineText;
+                                    for (FirebaseVisionText.Element element : line.getElements()) {
+                                        String elementText = element.getText();
+                                    }
                                 }
                             }
                         }
 
-                        Calendar beginTime = Calendar.getInstance();
-                        beginTime.set(2019, 1, 8, 7, 30);
-                        Calendar endTime = Calendar.getInstance();
-                        endTime.set(2019, 1, 8, 8, 30);
-                        Intent intent = new Intent(Intent.ACTION_INSERT)
-                                .setData(CalendarContract.Events.CONTENT_URI)
-                                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, beginTime.getTimeInMillis())
-                                .putExtra(CalendarContract.Events.TITLE, test)
-                                .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
-                        startActivity(intent);
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -101,6 +92,20 @@ public class ImageDetectActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void createEvent() {
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.set(2019, 1, 8, 7, 30);
+        Calendar endTime = Calendar.getInstance();
+        endTime.set(2019, 1, 8, 8, 30);
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, beginTime.getTimeInMillis())
+                .putExtra(CalendarContract.Events.TITLE, "test")
+                .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
+        startActivity(intent);
     }
 
 }
