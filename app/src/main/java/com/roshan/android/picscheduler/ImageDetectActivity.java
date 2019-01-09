@@ -11,8 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,6 +22,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -43,7 +42,6 @@ public class ImageDetectActivity extends AppCompatActivity {
 
     private List<Event> events;
 
-    @BindView(R.id.text_view) TextView textView;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
     @Override
@@ -56,6 +54,11 @@ public class ImageDetectActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        initializeData();
+
+        RVAdapter adapter = new RVAdapter(events);
+        recyclerView.setAdapter(adapter);
+
         intent = getIntent();
         imageBytes = intent.getByteArrayExtra("CapturedImage");
         cameraWidth = intent.getIntExtra("width", 0);
@@ -67,41 +70,48 @@ public class ImageDetectActivity extends AppCompatActivity {
         image = FirebaseVisionImage.fromBitmap(bitmap);
         detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
 
-        result = detector.processImage(image)
-                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-                    @Override
-                    public void onSuccess(FirebaseVisionText firebaseVisionText) {
-                        String resultText = firebaseVisionText.getText();
-                        for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
-                            String blockText = block.getText();
-                            Float blockConfidence = block.getConfidence();
-                            List<RecognizedLanguage> blockLanguages = block.getRecognizedLanguages();
-                            Point[] blockCornerPoints = block.getCornerPoints();
-                            Rect blockFrame = block.getBoundingBox();
-                            for (FirebaseVisionText.Line line : block.getLines()) {
-                                String lineText = line.getText();
-                                Float lineConfidence = line.getConfidence();
-                                List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
-                                Point[] lineCornerPoints = line.getCornerPoints();
-                                Rect lineFrame = line.getBoundingBox();
-                                if (lineText.contains(":")) {
-                                    textView.append(lineText + "\n\n");
-                                    for (FirebaseVisionText.Element element : line.getElements()) {
-                                        String elementText = element.getText();
-                                    }
-                                }
-                            }
-                        }
+//        result = detector.processImage(image)
+//                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+//                    @Override
+//                    public void onSuccess(FirebaseVisionText firebaseVisionText) {
+//                        String resultText = firebaseVisionText.getText();
+//                        for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
+//                            String blockText = block.getText();
+//                            Float blockConfidence = block.getConfidence();
+//                            List<RecognizedLanguage> blockLanguages = block.getRecognizedLanguages();
+//                            Point[] blockCornerPoints = block.getCornerPoints();
+//                            Rect blockFrame = block.getBoundingBox();
+//                            for (FirebaseVisionText.Line line : block.getLines()) {
+//                                String lineText = line.getText();
+//                                Float lineConfidence = line.getConfidence();
+//                                List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
+//                                Point[] lineCornerPoints = line.getCornerPoints();
+//                                Rect lineFrame = line.getBoundingBox();
+//                                if (lineText.contains(":")) {
+//                                    textView.append(lineText + "\n\n");
+//                                    for (FirebaseVisionText.Element element : line.getElements()) {
+//                                        String elementText = element.getText();
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+    }
 
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
+    private void initializeData() {
+        events = new ArrayList<>();
+        events.add(new Event("Test 1", "start 1", "end 1"));
+        events.add(new Event("Test 2", "start 2", "end 2"));
+        events.add(new Event("Test 3", "start 3", "end 3"));
     }
 
     private void createEvent() {
@@ -119,14 +129,14 @@ public class ImageDetectActivity extends AppCompatActivity {
     }
 
     class Event {
-        String eventName;
-        String eventStart;
-        String eventEnd;
+        String name;
+        String start;
+        String end;
 
-        Event(String eventName, String eventStart, String eventEnd) {
-            this.eventName = eventName;
-            this.eventStart = eventStart;
-            this.eventEnd = eventEnd;
+        Event(String name, String start, String end) {
+            this.name = name;
+            this.start = start;
+            this.end = end;
         }
     }
 
