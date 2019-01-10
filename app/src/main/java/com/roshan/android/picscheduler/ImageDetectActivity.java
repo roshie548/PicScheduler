@@ -77,14 +77,27 @@ public class ImageDetectActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                     @Override
                     public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                        //Find blocks of text
                         for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
+                            //Find lines in the blocks
                             for (FirebaseVisionText.Line line : block.getLines()) {
                                 String lineText = line.getText();
+
+                                //Holds the times of an event
                                 List<String> times = new ArrayList<>();
+
+                                //Holds whether the times are AM or PM
                                 List<String> ampm = new ArrayList<>();
+
+                                //Placeholder for days of the events
+                                //TODO: Maybe change this to an array?
                                 String scheduleDays = "test";
+
+                                //Find elements in the lines
                                 for (FirebaseVisionText.Element element : line.getElements()) {
                                     String elementText = element.getText();
+
+                                    //Identify the times and add them to the times ArrayList
                                     if (elementText.contains(":") && elementText.length() >= 4) {
                                         int firstIndex = elementText.indexOf(":");
                                         int firstEndIndex = firstIndex + 3;
@@ -98,11 +111,15 @@ public class ImageDetectActivity extends AppCompatActivity {
                                             times.add(elementText.substring(indexHyphen + 1, secondEndIndex));
                                         }
                                     }
+
+                                    //Identifies AM and PM and add to the ampm ArrayList
                                     if (elementText.contains("AM") || (elementText.contains(":") && elementText.contains("A"))) {
                                         ampm.add("AM");
                                     } else if (elementText.contains("PM") || (elementText.contains(":") && elementText.contains("P"))) {
                                         ampm.add("PM");
                                     }
+
+                                    //Identify which days and set it equal to the scheduleDays String
                                     if (elementText.equals("MWF") || elementText.equals("M,W,F")) {
                                         scheduleDays = "MWF";
                                     } else if (elementText.equals("M") || elementText.equals("Mon") || elementText.contains("Monday")) {
@@ -123,6 +140,7 @@ public class ImageDetectActivity extends AppCompatActivity {
                                     if (times.size() == 2) {
                                         events.add(new  Event(scheduleDays, times.get(0), times.get(1)));
                                     } else if (times.size() == 1) {
+                                        //TODO: Change the placeholder to a functional value
                                         events.add(new Event(scheduleDays, times.get(0), "10:00"));
                                     }
                                 }
