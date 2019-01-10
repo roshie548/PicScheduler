@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -80,17 +81,33 @@ public class ImageDetectActivity extends AppCompatActivity {
                             for (FirebaseVisionText.Line line : block.getLines()) {
                                 String lineText = line.getText();
                                 List<String> times = new ArrayList<>();
+                                String scheduleDays = "test";
                                 for (FirebaseVisionText.Element element : line.getElements()) {
                                     String elementText = element.getText();
                                     if (elementText.contains(":")) {
                                         times.add(elementText);
                                     }
+                                    if (elementText.equals("MWF") || elementText.equals("M,W,F")) {
+                                        scheduleDays = "MWF";
+                                    } else if (elementText.equals("M") || elementText.equals("Mon") || elementText.contains("Monday")) {
+                                        scheduleDays = "M";
+                                    } else if (elementText.equals("W") || elementText.equals("Wed") || elementText.contains("Wednesday")) {
+                                        scheduleDays = "W";
+                                    } else if (elementText.equals("F") || elementText.equals("Fri") || elementText.contains("Friday")) {
+                                        scheduleDays = "F";
+                                    } else if (elementText.equals("Tu") || elementText.equals("Tues") || elementText.contains("Tuesday")) {
+                                        scheduleDays = "Tu";
+                                    } else if (elementText.equals("Th") || elementText.equals("Thur") || elementText.equals("Thurs") || elementText.contains("Thursday")) {
+                                        scheduleDays = "Th";
+                                    } else if (elementText.equals("TuTh") || elementText.equals("TR")) {
+                                        scheduleDays = "TuTh";
+                                    }
                                 }
                                 if (!times.isEmpty()) {
                                     if (times.size() == 2) {
-                                        events.add(new  Event("test", times.get(0), times.get(1)));
+                                        events.add(new  Event(scheduleDays, times.get(0), times.get(1)));
                                     } else if (times.size() == 1) {
-                                        events.add(new Event("test", times.get(0), "10:00"));
+                                        events.add(new Event(scheduleDays, times.get(0), "10:00"));
                                     }
                                 }
                             }
@@ -167,7 +184,7 @@ public class ImageDetectActivity extends AppCompatActivity {
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, now.getTimeInMillis())
 //                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                .putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY=TU")
+                .putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY=TU,TH")
                 .putExtra(CalendarContract.Events.TITLE, "test")
                 .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
         startActivity(intent);
