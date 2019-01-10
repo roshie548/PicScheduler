@@ -86,9 +86,16 @@ public class ImageDetectActivity extends AppCompatActivity {
                                 for (FirebaseVisionText.Element element : line.getElements()) {
                                     String elementText = element.getText();
                                     if (elementText.contains(":") && elementText.length() >= 4) {
-                                        int i = elementText.indexOf(":") + 3;
-                                        if (i <= elementText.length()) {
-                                            times.add(elementText.substring(0, i));
+                                        int firstIndex = elementText.indexOf(":");
+                                        int firstEndIndex = firstIndex + 3;
+                                        int secondIndex = elementText.lastIndexOf(":");
+                                        int secondEndIndex = secondIndex + 3;
+                                        if (firstEndIndex <= elementText.length()) {
+                                            times.add(elementText.substring(0, firstEndIndex));
+                                        }
+                                        if (elementText.contains("-") && firstIndex != secondIndex && secondEndIndex <= elementText.length()) {
+                                            int indexHyphen = elementText.indexOf("-");
+                                            times.add(elementText.substring(indexHyphen + 1, secondEndIndex));
                                         }
                                     }
                                     if (elementText.contains("AM") || (elementText.contains(":") && elementText.contains("A"))) {
