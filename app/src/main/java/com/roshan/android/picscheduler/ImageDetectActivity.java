@@ -81,11 +81,20 @@ public class ImageDetectActivity extends AppCompatActivity {
                             for (FirebaseVisionText.Line line : block.getLines()) {
                                 String lineText = line.getText();
                                 List<String> times = new ArrayList<>();
+                                List<String> ampm = new ArrayList<>();
                                 String scheduleDays = "test";
                                 for (FirebaseVisionText.Element element : line.getElements()) {
                                     String elementText = element.getText();
-                                    if (elementText.contains(":")) {
-                                        times.add(elementText);
+                                    if (elementText.contains(":") && elementText.length() >= 4) {
+                                        int i = elementText.indexOf(":") + 3;
+                                        if (i <= elementText.length()) {
+                                            times.add(elementText.substring(0, i));
+                                        }
+                                    }
+                                    if (elementText.contains("AM") || (elementText.contains(":") && elementText.contains("A"))) {
+                                        ampm.add("AM");
+                                    } else if (elementText.contains("PM") || (elementText.contains(":") && elementText.contains("P"))) {
+                                        ampm.add("PM");
                                     }
                                     if (elementText.equals("MWF") || elementText.equals("M,W,F")) {
                                         scheduleDays = "MWF";
