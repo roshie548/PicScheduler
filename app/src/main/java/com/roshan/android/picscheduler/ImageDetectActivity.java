@@ -105,7 +105,7 @@ public class ImageDetectActivity extends AppCompatActivity {
 
                     }
                 });
-        createEvent();
+        createEvent(Calendar.SUNDAY);
 
 //        result = detector.processImage(image)
 //                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
@@ -152,15 +152,22 @@ public class ImageDetectActivity extends AppCompatActivity {
         events.add(new Event("Test 3", "start 3", "end 3"));
     }
 
-    private void createEvent() {
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(2019, 1, 8, 7, 30);
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(2019, 1, 8, 8, 30);
+    private void createEvent(int day) {
+        Calendar now = Calendar.getInstance();
+        int weekday = now.get(Calendar.DAY_OF_WEEK);
+        if (weekday != day) {
+            int days = (Calendar.SATURDAY - weekday + 7 - Math.abs(Calendar.SATURDAY - day)) % 7;
+            now.add(Calendar.DAY_OF_YEAR, days);
+        }
+//        Calendar beginTime = Calendar.getInstance();
+//        beginTime.set(2019, 1, 8, 7, 30);
+//        Calendar endTime = Calendar.getInstance();
+//        endTime.set(2019, 1, 8, 8, 30);
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, now.getTimeInMillis())
+//                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                .putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY=TU")
                 .putExtra(CalendarContract.Events.TITLE, "test")
                 .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
         startActivity(intent);
