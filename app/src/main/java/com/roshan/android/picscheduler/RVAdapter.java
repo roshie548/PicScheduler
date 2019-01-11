@@ -29,8 +29,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder eventViewHolder, int i) {
         eventViewHolder.eventName.setText(events.get(i).name);
+
+        String endTime = events.get(i).end;
+
         eventViewHolder.eventStartTime.setText(events.get(i).start);
-        eventViewHolder.eventEndTime.setText(events.get(i).end);
+        if (endTime != null) {
+            eventViewHolder.eventEndTime.setText(events.get(i).end);
+        }
     }
 
     @Override

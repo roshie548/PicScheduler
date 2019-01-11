@@ -90,8 +90,7 @@ public class ImageDetectActivity extends AppCompatActivity {
                                 List<Integer> ampm = new ArrayList<>();
 
                                 //Placeholder for days of the events
-                                //TODO: Maybe change this to an array?
-                                String scheduleDays = "test";
+                                List<Integer> scheduleDays = new ArrayList<>();
 
                                 //Find elements in the lines
                                 for (FirebaseVisionText.Element element : line.getElements()) {
@@ -120,28 +119,35 @@ public class ImageDetectActivity extends AppCompatActivity {
                                     }
 
                                     //Identify which days and set it equal to the scheduleDays String
+                                    //TBH this is ugly code :(
                                     if (elementText.equals("MWF") || elementText.equals("M,W,F")) {
-                                        scheduleDays = "MWF";
+                                        scheduleDays.add(Calendar.MONDAY);
+                                        scheduleDays.add(Calendar.WEDNESDAY);
+                                        scheduleDays.add(Calendar.FRIDAY);
                                     } else if (elementText.equals("M") || elementText.equals("Mon") || elementText.contains("Monday")) {
-                                        scheduleDays = "M";
+                                        scheduleDays.add(Calendar.MONDAY);
                                     } else if (elementText.equals("W") || elementText.equals("Wed") || elementText.contains("Wednesday")) {
-                                        scheduleDays = "W";
+                                        scheduleDays.add(Calendar.WEDNESDAY);
                                     } else if (elementText.equals("F") || elementText.equals("Fri") || elementText.contains("Friday")) {
-                                        scheduleDays = "F";
+                                        scheduleDays.add(Calendar.FRIDAY);
                                     } else if (elementText.equals("Tu") || elementText.equals("Tues") || elementText.contains("Tuesday")) {
-                                        scheduleDays = "Tu";
+                                        scheduleDays.add(Calendar.TUESDAY);
                                     } else if (elementText.equals("Th") || elementText.equals("Thur") || elementText.equals("Thurs") || elementText.contains("Thursday")) {
-                                        scheduleDays = "Th";
+                                        scheduleDays.add(Calendar.THURSDAY);
                                     } else if (elementText.equals("TuTh") || elementText.equals("TR")) {
-                                        scheduleDays = "TuTh";
+                                        scheduleDays.add(Calendar.TUESDAY);
+                                        scheduleDays.add(Calendar.THURSDAY);
+                                    } else if (elementText.equals("Sa") || elementText.equals("Sat") || elementText.contains("Saturday")) {
+                                        scheduleDays.add(Calendar.SATURDAY);
+                                    } else if (elementText.equals("Su") || elementText.equals("Sun") || elementText.contains("Sunday")) {
+                                        scheduleDays.add(Calendar.SUNDAY);
                                     }
                                 }
                                 if (!times.isEmpty()) {
                                     if (times.size() == 2) {
-                                        events.add(new  Event(scheduleDays, times.get(0), times.get(1)));
+                                        events.add(new  Event("test", times.get(0), times.get(1)));
                                     } else if (times.size() == 1) {
-                                        //TODO: Change the placeholder to a functional value
-                                        events.add(new Event(scheduleDays, times.get(0), "10:00"));
+                                        events.add(new Event("test", times.get(0), null));
                                     }
                                 }
                             }
@@ -163,7 +169,8 @@ public class ImageDetectActivity extends AppCompatActivity {
         testList.add(Calendar.FRIDAY);
 
         List<Integer> testTwo = new ArrayList<>();
-        testTwo.add(1);
+        testTwo.add(Calendar.AM);
+        testTwo.add(Calendar.AM);
         createEvent(testList, testTwo);
 //        createEvent(Calendar.SUNDAY);
 
@@ -251,25 +258,26 @@ public class ImageDetectActivity extends AppCompatActivity {
             }
         }
 
-        Log.w("TESTINGGGGG", byDay);
 
         //Start time of event
-//        Calendar beginTime = Calendar.getInstance();
-//        beginTime.set(Calendar.AM_PM, ampm.get(0));
-//
-//        //End time of event
-//        Calendar endTime = Calendar.getInstance();
-//        endTime.set(Calendar.AM_PM, ampm.get(1));
-//
-//        endTime.set(2019, 1, 8, 8, 30);
-//        Intent intent = new Intent(Intent.ACTION_INSERT)
-//                .setData(CalendarContract.Events.CONTENT_URI)
-//                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, now.getTimeInMillis())
-////                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-//                .putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY=TU,TH")
-//                .putExtra(CalendarContract.Events.TITLE, "test")
-//                .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
-//        startActivity(intent);
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.set(Calendar.AM_PM, ampm.get(0));
+
+        //End time of event
+        Calendar endTime = Calendar.getInstance();
+        endTime.set(Calendar.AM_PM, ampm.get(1));
+
+        endTime.set(2019, 1, 8, 8, 30);
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, now.getTimeInMillis())
+//                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                .putExtra(CalendarContract.Events.TITLE, "test")
+                .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
+        if (!byDay.isEmpty()) {
+            intent.putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY="+byDay);
+        }
+        startActivity(intent);
     }
 
     class Event {
