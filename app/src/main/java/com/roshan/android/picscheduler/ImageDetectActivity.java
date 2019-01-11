@@ -87,7 +87,7 @@ public class ImageDetectActivity extends AppCompatActivity {
                                 List<String> times = new ArrayList<>();
 
                                 //Holds whether the times are AM or PM
-                                List<String> ampm = new ArrayList<>();
+                                List<Integer> ampm = new ArrayList<>();
 
                                 //Placeholder for days of the events
                                 //TODO: Maybe change this to an array?
@@ -114,9 +114,9 @@ public class ImageDetectActivity extends AppCompatActivity {
 
                                     //Identifies AM and PM and add to the ampm ArrayList
                                     if (elementText.contains("AM") || (elementText.contains(":") && elementText.contains("A"))) {
-                                        ampm.add("AM");
+                                        ampm.add(Calendar.AM);
                                     } else if (elementText.contains("PM") || (elementText.contains(":") && elementText.contains("P"))) {
-                                        ampm.add("PM");
+                                        ampm.add(Calendar.PM);
                                     }
 
                                     //Identify which days and set it equal to the scheduleDays String
@@ -156,7 +156,16 @@ public class ImageDetectActivity extends AppCompatActivity {
 
                     }
                 });
-        createEvent(Calendar.SUNDAY);
+
+        List<Integer> testList = new ArrayList<>();
+        testList.add(Calendar.MONDAY);
+        testList.add(Calendar.WEDNESDAY);
+        testList.add(Calendar.FRIDAY);
+
+        List<Integer> testTwo = new ArrayList<>();
+        testTwo.add(1);
+        createEvent(testList, testTwo);
+//        createEvent(Calendar.SUNDAY);
 
 //        result = detector.processImage(image)
 //                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
@@ -203,25 +212,64 @@ public class ImageDetectActivity extends AppCompatActivity {
         events.add(new Event("Test 3", "start 3", "end 3"));
     }
 
-    private void createEvent(int day) {
+    private void createEvent(List<Integer> days, List<Integer> ampm) {
         Calendar now = Calendar.getInstance();
         int weekday = now.get(Calendar.DAY_OF_WEEK);
-        if (weekday != day) {
-            int days = (Calendar.SATURDAY - weekday + 7 - Math.abs(Calendar.SATURDAY - day)) % 7;
-            now.add(Calendar.DAY_OF_YEAR, days);
+        if (weekday != days.get(0)) {
+            int targetDay = (Calendar.SATURDAY - weekday + 7 - Math.abs(Calendar.SATURDAY - days.get(0))) % 7;
+            now.add(Calendar.DAY_OF_YEAR, targetDay);
         }
+
+        String byDay = "";
+        for (int i = 0; i < days.size(); i++) {
+            switch (days.get(i)) {
+                case Calendar.SUNDAY:
+                    byDay += "SU";
+                    break;
+                case Calendar.MONDAY:
+                    byDay += "MO";
+                    break;
+                case Calendar.TUESDAY:
+                    byDay += "TU";
+                    break;
+                case Calendar.WEDNESDAY:
+                    byDay += "WE";
+                    break;
+                case Calendar.THURSDAY:
+                    byDay += "TH";
+                    break;
+                case Calendar.FRIDAY:
+                    byDay += "FR";
+                    break;
+                case Calendar.SATURDAY:
+                    byDay += "SA";
+                    break;
+            }
+
+            if (i != days.size() - 1) {
+                byDay += ",";
+            }
+        }
+
+        Log.w("TESTINGGGGG", byDay);
+
+        //Start time of event
 //        Calendar beginTime = Calendar.getInstance();
-//        beginTime.set(2019, 1, 8, 7, 30);
+//        beginTime.set(Calendar.AM_PM, ampm.get(0));
+//
+//        //End time of event
 //        Calendar endTime = Calendar.getInstance();
+//        endTime.set(Calendar.AM_PM, ampm.get(1));
+//
 //        endTime.set(2019, 1, 8, 8, 30);
-        Intent intent = new Intent(Intent.ACTION_INSERT)
-                .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, now.getTimeInMillis())
-//                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                .putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY=TU,TH")
-                .putExtra(CalendarContract.Events.TITLE, "test")
-                .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
-        startActivity(intent);
+//        Intent intent = new Intent(Intent.ACTION_INSERT)
+//                .setData(CalendarContract.Events.CONTENT_URI)
+//                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, now.getTimeInMillis())
+////                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+//                .putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY=TU,TH")
+//                .putExtra(CalendarContract.Events.TITLE, "test")
+//                .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
+//        startActivity(intent);
     }
 
     class Event {
