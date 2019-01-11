@@ -148,11 +148,13 @@ public class ImageDetectActivity extends AppCompatActivity {
                                         events.add(new  Event("test", times.get(0), times.get(1)));
                                     } else if (times.size() == 1) {
                                         events.add(new Event("test", times.get(0), null));
+                                    } else {
+                                        events.add(new Event("test", null, null));
                                     }
                                 }
                             }
                         }
-                        RVAdapter adapter = new RVAdapter(events);
+                        RVAdapter adapter = new RVAdapter(ImageDetectActivity.this, events);
                         recyclerView.setAdapter(adapter);
                     }
                 })
@@ -162,16 +164,6 @@ public class ImageDetectActivity extends AppCompatActivity {
 
                     }
                 });
-
-        List<Integer> testList = new ArrayList<>();
-        testList.add(Calendar.MONDAY);
-        testList.add(Calendar.WEDNESDAY);
-        testList.add(Calendar.FRIDAY);
-
-        List<Integer> testTwo = new ArrayList<>();
-        testTwo.add(Calendar.AM);
-        testTwo.add(Calendar.AM);
-        createEvent(testList, testTwo);
     }
 
 
@@ -180,66 +172,6 @@ public class ImageDetectActivity extends AppCompatActivity {
         events.add(new Event("Test 1", "start 1", "end 1"));
         events.add(new Event("Test 2", "start 2", "end 2"));
         events.add(new Event("Test 3", "start 3", "end 3"));
-    }
-
-    private void createEvent(List<Integer> days, List<Integer> ampm) {
-        Calendar now = Calendar.getInstance();
-        int weekday = now.get(Calendar.DAY_OF_WEEK);
-        if (weekday != days.get(0)) {
-            int targetDay = (Calendar.SATURDAY - weekday + 7 - Math.abs(Calendar.SATURDAY - days.get(0))) % 7;
-            now.add(Calendar.DAY_OF_YEAR, targetDay);
-        }
-
-        String byDay = "";
-        for (int i = 0; i < days.size(); i++) {
-            switch (days.get(i)) {
-                case Calendar.SUNDAY:
-                    byDay += "SU";
-                    break;
-                case Calendar.MONDAY:
-                    byDay += "MO";
-                    break;
-                case Calendar.TUESDAY:
-                    byDay += "TU";
-                    break;
-                case Calendar.WEDNESDAY:
-                    byDay += "WE";
-                    break;
-                case Calendar.THURSDAY:
-                    byDay += "TH";
-                    break;
-                case Calendar.FRIDAY:
-                    byDay += "FR";
-                    break;
-                case Calendar.SATURDAY:
-                    byDay += "SA";
-                    break;
-            }
-
-            if (i != days.size() - 1) {
-                byDay += ",";
-            }
-        }
-
-        //Start time of event
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(Calendar.AM_PM, ampm.get(0));
-
-        //End time of event
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(Calendar.AM_PM, ampm.get(1));
-//        endTime.set(Calendar.HOUR)
-
-        endTime.set(2019, 1, 8, 8, 30);
-        Intent intent = new Intent(Intent.ACTION_INSERT)
-                .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, now.getTimeInMillis())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                .putExtra(CalendarContract.Events.TITLE, "test");
-        if (!byDay.isEmpty()) {
-            intent.putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY="+byDay);
-        }
-        startActivity(intent);
     }
 
     class Event {
@@ -257,10 +189,12 @@ public class ImageDetectActivity extends AppCompatActivity {
             this.start = start;
             this.end = end;
 
-            int i = start.indexOf(":");
-            if (i != -1) {
-                startHour = Integer.parseInt(start.substring(0, i));
-                startMinutes = Integer.parseInt(start.substring(i+1, start.length()));
+            if (start != null) {
+                int i = start.indexOf(":");
+                if (i != -1) {
+                    startHour = Integer.parseInt(start.substring(0, i));
+                    startMinutes = Integer.parseInt(start.substring(i+1, start.length()));
+                }
             }
 
             if (end != null) {

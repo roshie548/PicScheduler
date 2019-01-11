@@ -128,9 +128,6 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
                     }
                 });
-
-                //TODO: Launch new activity, pass the bitmap
-                // Maybe use Fragments instead of new activity?
             }
         });
     }
