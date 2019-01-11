@@ -172,43 +172,6 @@ public class ImageDetectActivity extends AppCompatActivity {
         testTwo.add(Calendar.AM);
         testTwo.add(Calendar.AM);
         createEvent(testList, testTwo);
-//        createEvent(Calendar.SUNDAY);
-
-//        result = detector.processImage(image)
-//                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-//                    @Override
-//                    public void onSuccess(FirebaseVisionText firebaseVisionText) {
-//                        String resultText = firebaseVisionText.getText();
-//                        for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
-//                            String blockText = block.getText();
-//                            Float blockConfidence = block.getConfidence();
-//                            List<RecognizedLanguage> blockLanguages = block.getRecognizedLanguages();
-//                            Point[] blockCornerPoints = block.getCornerPoints();
-//                            Rect blockFrame = block.getBoundingBox();
-//                            for (FirebaseVisionText.Line line : block.getLines()) {
-//                                String lineText = line.getText();
-//                                Float lineConfidence = line.getConfidence();
-//                                List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
-//                                Point[] lineCornerPoints = line.getCornerPoints();
-//                                Rect lineFrame = line.getBoundingBox();
-//                                if (lineText.contains(":")) {
-//                                    textView.append(lineText + "\n\n");
-//                                    for (FirebaseVisionText.Element element : line.getElements()) {
-//                                        String elementText = element.getText();
-//                                    }
-//                                }
-//                            }
-//                        }
-//
-//
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//
-//                    }
-//                });
     }
 
 
@@ -258,7 +221,6 @@ public class ImageDetectActivity extends AppCompatActivity {
             }
         }
 
-
         //Start time of event
         Calendar beginTime = Calendar.getInstance();
         beginTime.set(Calendar.AM_PM, ampm.get(0));
@@ -266,14 +228,14 @@ public class ImageDetectActivity extends AppCompatActivity {
         //End time of event
         Calendar endTime = Calendar.getInstance();
         endTime.set(Calendar.AM_PM, ampm.get(1));
+//        endTime.set(Calendar.HOUR)
 
         endTime.set(2019, 1, 8, 8, 30);
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, now.getTimeInMillis())
-//                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                .putExtra(CalendarContract.Events.TITLE, "test")
-                .putExtra(CalendarContract.Events.DESCRIPTION, "testing description");
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                .putExtra(CalendarContract.Events.TITLE, "test");
         if (!byDay.isEmpty()) {
             intent.putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY="+byDay);
         }
@@ -284,11 +246,30 @@ public class ImageDetectActivity extends AppCompatActivity {
         String name;
         String start;
         String end;
+        int startHour;
+        int startMinutes;
+        int endHour;
+        int endMinutes;
 
+        //TODO: Optional parameters?
         Event(String name, String start, String end) {
             this.name = name;
             this.start = start;
             this.end = end;
+
+            int i = start.indexOf(":");
+            if (i != -1) {
+                startHour = Integer.parseInt(start.substring(0, i));
+                startMinutes = Integer.parseInt(start.substring(i+1, start.length()));
+            }
+
+            if (end != null) {
+                int j = end.indexOf(":");
+                if (j != -1) {
+                    endHour = Integer.parseInt(end.substring(0, j));
+                    endMinutes = Integer.parseInt(end.substring(j + 1, end.length()));
+                }
+            }
         }
     }
 

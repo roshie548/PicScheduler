@@ -36,6 +36,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
         if (endTime != null) {
             eventViewHolder.eventEndTime.setText(events.get(i).end);
         }
+
+        eventViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
