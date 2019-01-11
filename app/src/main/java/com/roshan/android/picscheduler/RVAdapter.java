@@ -44,19 +44,15 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
             eventViewHolder.eventEndTime.setText(events.get(i).end);
         }
 
+        final int item = i;
+
         eventViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Figure out how to create activity from here
-                List<Integer> testList = new ArrayList<>();
-                testList.add(Calendar.MONDAY);
-                testList.add(Calendar.WEDNESDAY);
-                testList.add(Calendar.FRIDAY);
-
                 List<Integer> testTwo = new ArrayList<>();
                 testTwo.add(Calendar.AM);
                 testTwo.add(Calendar.AM);
-                createEvent(testList, testTwo);
+                createEvent(events.get(item).days, testTwo);
             }
         });
     }
@@ -83,42 +79,47 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
 
     private void createEvent(List<Integer> days, List<Integer> ampm) {
         Calendar now = Calendar.getInstance();
+
         int weekday = now.get(Calendar.DAY_OF_WEEK);
-        if (weekday != days.get(0)) {
-            int targetDay = (Calendar.SATURDAY - weekday + 7 - Math.abs(Calendar.SATURDAY - days.get(0))) % 7;
-            now.add(Calendar.DAY_OF_YEAR, targetDay);
-        }
-
         String byDay = "";
-        for (int i = 0; i < days.size(); i++) {
-            switch (days.get(i)) {
-                case Calendar.SUNDAY:
-                    byDay += "SU";
-                    break;
-                case Calendar.MONDAY:
-                    byDay += "MO";
-                    break;
-                case Calendar.TUESDAY:
-                    byDay += "TU";
-                    break;
-                case Calendar.WEDNESDAY:
-                    byDay += "WE";
-                    break;
-                case Calendar.THURSDAY:
-                    byDay += "TH";
-                    break;
-                case Calendar.FRIDAY:
-                    byDay += "FR";
-                    break;
-                case Calendar.SATURDAY:
-                    byDay += "SA";
-                    break;
-            }
 
-            if (i != days.size() - 1) {
-                byDay += ",";
+        if (!days.isEmpty()) {
+            if (weekday != days.get(0)) {
+                int targetDay = (Calendar.SATURDAY - weekday + 7 - Math.abs(Calendar.SATURDAY - days.get(0))) % 7;
+                now.add(Calendar.DAY_OF_YEAR, targetDay);
+            }
+            for (int i = 0; i < days.size(); i++) {
+                switch (days.get(i)) {
+                    case Calendar.SUNDAY:
+                        byDay += "SU";
+                        break;
+                    case Calendar.MONDAY:
+                        byDay += "MO";
+                        break;
+                    case Calendar.TUESDAY:
+                        byDay += "TU";
+                        break;
+                    case Calendar.WEDNESDAY:
+                        byDay += "WE";
+                        break;
+                    case Calendar.THURSDAY:
+                        byDay += "TH";
+                        break;
+                    case Calendar.FRIDAY:
+                        byDay += "FR";
+                        break;
+                    case Calendar.SATURDAY:
+                        byDay += "SA";
+                        break;
+                }
+
+                if (i != days.size() - 1) {
+                    byDay += ",";
+                }
             }
         }
+
+
 
         //Start time of event
         Calendar beginTime = Calendar.getInstance();

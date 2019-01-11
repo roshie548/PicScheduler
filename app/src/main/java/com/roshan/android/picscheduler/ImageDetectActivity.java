@@ -56,11 +56,9 @@ public class ImageDetectActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        events = new ArrayList<>();
 
-        initializeData();
-
-//        RVAdapter adapter = new RVAdapter(events);
-//        recyclerView.setAdapter(adapter);
+//        initializeData();
 
         intent = getIntent();
         imageBytes = intent.getByteArrayExtra("CapturedImage");
@@ -145,11 +143,11 @@ public class ImageDetectActivity extends AppCompatActivity {
                                 }
                                 if (!times.isEmpty()) {
                                     if (times.size() == 2) {
-                                        events.add(new  Event("test", times.get(0), times.get(1)));
+                                        events.add(new  Event("test", times.get(0), times.get(1), scheduleDays));
                                     } else if (times.size() == 1) {
-                                        events.add(new Event("test", times.get(0), null));
+                                        events.add(new Event("test", times.get(0), null, scheduleDays));
                                     } else {
-                                        events.add(new Event("test", null, null));
+                                        events.add(new Event("test", null, null, scheduleDays));
                                     }
                                 }
                             }
@@ -169,25 +167,27 @@ public class ImageDetectActivity extends AppCompatActivity {
 
     private void initializeData() {
         events = new ArrayList<>();
-        events.add(new Event("Test 1", "start 1", "end 1"));
-        events.add(new Event("Test 2", "start 2", "end 2"));
-        events.add(new Event("Test 3", "start 3", "end 3"));
+//        events.add(new Event("Test 1", "start 1", "end 1"));
+//        events.add(new Event("Test 2", "start 2", "end 2"));
+//        events.add(new Event("Test 3", "start 3", "end 3"));
     }
 
     class Event {
         String name;
         String start;
         String end;
+        List<Integer> days;
         int startHour;
         int startMinutes;
         int endHour;
         int endMinutes;
 
         //TODO: Optional parameters?
-        Event(String name, String start, String end) {
+        Event(String name, String start, String end, List<Integer> days) {
             this.name = name;
             this.start = start;
             this.end = end;
+            this.days = days;
 
             if (start != null) {
                 int i = start.indexOf(":");
