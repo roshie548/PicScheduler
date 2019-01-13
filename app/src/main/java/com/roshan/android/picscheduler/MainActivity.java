@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.bottomappbar.BottomAppBar;
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String MY_PREFERENCES = "MyPrefs";
     public static final String SIGNED_IN = "SignedIn";
 
+    SharedPreferences sharedPreferences;
+
     String personName;
     Uri personPhoto;
 
@@ -56,17 +59,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
-
         setSupportActionBar(bottomAppBar);
 
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
         Intent intent = getIntent();
-        personName = intent.getStringExtra(PERSON_NAME);
-        personPhoto = intent.getParcelableExtra(PERSON_PHOTO);
+        if (intent.getStringExtra(PERSON_NAME) != null) {
+            editor.putString("name", intent.getStringExtra(PERSON_NAME));
+            editor.apply();
+        }
+        if (intent.getParcelableExtra(PERSON_PHOTO) != null) {
+            editor.putString("photo", intent.getParcelableExtra(PERSON_PHOTO).toString());
+            editor.apply();
+        }
+
+        personName = sharedPreferences.getString("name", "");
+        personPhoto = Uri.parse(sharedPreferences.getString("photo", ""));
 
         View headerView = navigationView.getHeaderView(0);
         TextView navName = headerView.findViewById(R.id.nav_name);
@@ -125,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("CapturedImage", imageBytes);
                         intent.putExtra("width", mCameraView.getWidth());
                         intent.putExtra("height", mCameraView.getHeight());
+                        intent.putExtra(PERSON_NAME, personName);
+                        intent.putExtra(PERSON_PHOTO, personPhoto);
                         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
                     }
                 });

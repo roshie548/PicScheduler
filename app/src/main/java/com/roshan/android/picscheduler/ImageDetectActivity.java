@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +43,7 @@ public class ImageDetectActivity extends AppCompatActivity {
     private static Task<FirebaseVisionText> result;
     private static int cameraWidth;
     private static int cameraHeight;
+
 
     private List<Event> events;
 
@@ -236,14 +238,6 @@ public class ImageDetectActivity extends AppCompatActivity {
 
                     }
                 });
-    }
-
-
-    private void initializeData() {
-        events = new ArrayList<>();
-//        events.add(new Event("Test 1", "start 1", "end 1"));
-//        events.add(new Event("Test 2", "start 2", "end 2"));
-//        events.add(new Event("Test 3", "start 3", "end 3"));
     }
 
     class Event {
