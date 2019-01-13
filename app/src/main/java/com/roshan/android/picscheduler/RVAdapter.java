@@ -122,27 +122,37 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
             }
         }
 
-
-        beginTime.set(Calendar.HOUR, startHour);
-        beginTime.set(Calendar.MINUTE, startMinutes);
+        if (startHour == 12) {
+            beginTime.set(Calendar.HOUR, 0);
+        } else {
+            beginTime.set(Calendar.HOUR, startHour);
+        }
         if (!ampm.isEmpty()) {
             beginTime.set(Calendar.AM_PM, ampm.get(0));
-
         }
 
+        beginTime.set(Calendar.MINUTE, startMinutes);
+
+
         if (endHour != -1 && endMinutes != -1) {
-            endTime.set(Calendar.HOUR, endHour);
+            if (ampm.size() != 2) {
+                endTime.set(Calendar.AM_PM, ampm.get(0));
+            } else {
+                endTime.set(Calendar.AM_PM, ampm.get(1));
+            }
+
+            if (endHour == 12) {
+                endTime.set(Calendar.HOUR, 0);
+            } else {
+                endTime.set(Calendar.HOUR, endHour);
+
+            }
             endTime.set(Calendar.MINUTE, endMinutes);
         } else {
             endTime.set(Calendar.HOUR, startHour + 1);
             endTime.set(Calendar.HOUR, startMinutes);
         }
 
-        if (ampm.size() != 2) {
-            endTime.set(Calendar.AM_PM, ampm.get(0));
-        } else {
-            endTime.set(Calendar.AM_PM, ampm.get(1));
-        }
 
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
