@@ -82,6 +82,10 @@ public class ImageDetectActivity extends AppCompatActivity {
                             for (FirebaseVisionText.Line line : block.getLines()) {
                                 String lineText = line.getText();
 
+                                int index = Integer.MAX_VALUE;
+
+                                String title;
+
                                 //Holds the times of an event
                                 List<String> times = new ArrayList<>();
 
@@ -97,6 +101,9 @@ public class ImageDetectActivity extends AppCompatActivity {
 
                                     //Identify the times and add them to the times ArrayList
                                     if (elementText.contains(":") && elementText.length() >= 4) {
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                         int firstIndex = elementText.indexOf(":");
                                         int firstEndIndex = firstIndex + 3;
                                         int secondIndex = elementText.lastIndexOf(":");
@@ -157,32 +164,64 @@ public class ImageDetectActivity extends AppCompatActivity {
                                         scheduleDays.add(Calendar.MONDAY);
                                         scheduleDays.add(Calendar.WEDNESDAY);
                                         scheduleDays.add(Calendar.FRIDAY);
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                     } else if (elementText.equals("M") || elementText.equals("Mon") || elementText.contains("Monday")) {
                                         scheduleDays.add(Calendar.MONDAY);
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                     } else if (elementText.equals("W") || elementText.equals("Wed") || elementText.contains("Wednesday")) {
                                         scheduleDays.add(Calendar.WEDNESDAY);
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                     } else if (elementText.equals("F") || elementText.equals("Fri") || elementText.contains("Friday")) {
                                         scheduleDays.add(Calendar.FRIDAY);
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                     } else if (elementText.equals("Tu") || elementText.equals("Tues") || elementText.contains("Tuesday")) {
                                         scheduleDays.add(Calendar.TUESDAY);
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                     } else if (elementText.equals("Th") || elementText.equals("Thur") || elementText.equals("Thurs") || elementText.contains("Thursday")) {
                                         scheduleDays.add(Calendar.THURSDAY);
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                     } else if (elementText.equals("TuTh") || elementText.equals("TR")) {
                                         scheduleDays.add(Calendar.TUESDAY);
                                         scheduleDays.add(Calendar.THURSDAY);
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                     } else if (elementText.equals("Sa") || elementText.equals("Sat") || elementText.contains("Saturday")) {
                                         scheduleDays.add(Calendar.SATURDAY);
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                     } else if (elementText.equals("Su") || elementText.equals("Sun") || elementText.contains("Sunday")) {
                                         scheduleDays.add(Calendar.SUNDAY);
+                                        if (lineText.indexOf(elementText) < index) {
+                                            index = lineText.indexOf(elementText);
+                                        }
                                     }
+                                }
+                                if (index == Integer.MAX_VALUE || lineText.substring(0, index).isEmpty()) {
+                                    title = "Event";
+                                } else {
+                                    title = lineText.substring(0, index);
                                 }
                                 if (!times.isEmpty()) {
                                     if (times.size() == 2) {
-                                        events.add(new  Event("test", times.get(0), times.get(1), scheduleDays, ampm));
+                                        events.add(new  Event(title, times.get(0), times.get(1), scheduleDays, ampm));
                                     } else if (times.size() == 1) {
-                                        events.add(new Event("test", times.get(0), null, scheduleDays, ampm));
+                                        events.add(new Event(title, times.get(0), null, scheduleDays, ampm));
                                     } else {
-                                        events.add(new Event("test", null, null, scheduleDays, ampm));
+                                        events.add(new Event(title, null, null, scheduleDays, ampm));
                                     }
                                 }
                             }

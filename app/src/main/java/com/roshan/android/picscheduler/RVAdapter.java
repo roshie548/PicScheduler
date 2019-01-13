@@ -73,7 +73,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
             @Override
             public void onClick(View view) {
                 List<Integer> testTwo = new ArrayList<>();
-                createEvent(events.get(item).days, events.get(item).ampm, events.get(item).startHour,
+                createEvent(events.get(item).name, events.get(item).days, events.get(item).ampm, events.get(item).startHour,
                         events.get(item).startMinutes, events.get(item).endHour, events.get(item).endMinutes);
             }
         });
@@ -99,7 +99,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
         }
     }
 
-    private void createEvent(List<Integer> days, List<Integer> ampm, int startHour, int startMinutes, int endHour, int endMinutes) {
+    private void createEvent(String title, List<Integer> days, List<Integer> ampm, int startHour, int startMinutes, int endHour, int endMinutes) {
 
         //TODO: Configure times
         Calendar beginTime = Calendar.getInstance();
@@ -179,9 +179,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
 
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.Events.TITLE, title)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                .putExtra(CalendarContract.Events.TITLE, "test");
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis());
         if (!byDay.isEmpty()) {
             intent.putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY="+byDay);
         }
