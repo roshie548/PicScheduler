@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -106,15 +107,49 @@ public class ImageDetectActivity extends AppCompatActivity {
                                         if (elementText.contains("-") && firstIndex != secondIndex && secondEndIndex <= elementText.length()) {
                                             int indexHyphen = elementText.indexOf("-");
                                             times.add(elementText.substring(indexHyphen + 1, secondEndIndex));
+                                            int amFirstIndex = -1;
+                                            int amLastIndex = -1;
+                                            int pmFirstIndex = -1;
+                                            int pmLastIndex = -1;
+                                            if (elementText.contains("A")) {
+                                                amFirstIndex = elementText.indexOf("A");
+                                                amLastIndex = elementText.lastIndexOf("A");
+                                            }
+                                            if (elementText.contains("P")) {
+                                                pmFirstIndex = elementText.indexOf("P");
+                                                pmLastIndex = elementText.lastIndexOf("P");
+                                            }
+
+                                            if (amFirstIndex != -1 && pmFirstIndex != -1) {
+                                                if (amFirstIndex < pmFirstIndex) {
+                                                    ampm.add(Calendar.AM);
+                                                    ampm.add(Calendar.PM);
+                                                } else {
+                                                    ampm.add(Calendar.PM);
+                                                    ampm.add(Calendar.AM);
+                                                }
+                                            } else if (amFirstIndex != -1) {
+                                                if (amFirstIndex != amLastIndex) {
+                                                    ampm.add(Calendar.AM);
+                                                    ampm.add(Calendar.AM);
+                                                }
+                                            } else if (pmFirstIndex != -1) {
+                                                if (pmFirstIndex != pmLastIndex) {
+                                                    ampm.add(Calendar.PM);
+                                                    ampm.add(Calendar.PM);
+                                                }
+                                            }
+                                        } else {
+                                            //Identifies AM and PM and add to the ampm ArrayList
+                                            if (elementText.contains("AM") || (elementText.contains(":") && elementText.contains("A"))) {
+                                                ampm.add(Calendar.AM);
+                                            } else if (elementText.contains("PM") || (elementText.contains(":") && elementText.contains("P"))) {
+                                                ampm.add(Calendar.PM);
+                                            }
                                         }
                                     }
 
-                                    //Identifies AM and PM and add to the ampm ArrayList
-                                    if (elementText.contains("AM") || (elementText.contains(":") && elementText.contains("A"))) {
-                                        ampm.add(Calendar.AM);
-                                    } else if (elementText.contains("PM") || (elementText.contains(":") && elementText.contains("P"))) {
-                                        ampm.add(Calendar.PM);
-                                    }
+
 
                                     //Identify which days and set it equal to the scheduleDays String
                                     //TBH this is ugly code :(
@@ -194,16 +229,28 @@ public class ImageDetectActivity extends AppCompatActivity {
             if (start != null) {
                 int i = start.indexOf(":");
                 if (i != -1) {
-                    startHour = Integer.parseInt(start.substring(0, i));
-                    startMinutes = Integer.parseInt(start.substring(i+1, start.length()));
+                    try {
+                        startHour = Integer.parseInt(start.substring(0, i));
+                        startMinutes = Integer.parseInt(start.substring(i+1, start.length()));
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        Toast toast = Toast.makeText(getApplicationContext(), "There was an error recognizing the times. One or more of the events may be incorrect.", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
                 }
             }
 
             if (end != null) {
                 int j = end.indexOf(":");
                 if (j != -1) {
-                    endHour = Integer.parseInt(end.substring(0, j));
-                    endMinutes = Integer.parseInt(end.substring(j + 1, end.length()));
+                    try {
+                        endHour = Integer.parseInt(end.substring(0, j));
+                        endMinutes = Integer.parseInt(end.substring(j + 1, end.length()));
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        Toast toast =Toast.makeText(getApplicationContext(), "There was an error recognizing the times. One or more of the events may be incorrect.", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
                 }
             }
         }

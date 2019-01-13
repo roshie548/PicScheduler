@@ -38,10 +38,33 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
         eventViewHolder.eventName.setText(events.get(i).name);
 
         String endTime = events.get(i).end;
+        List<Integer> ampm = events.get(i).ampm;
 
         eventViewHolder.eventStartTime.setText(events.get(i).start);
+
         if (endTime != null) {
             eventViewHolder.eventEndTime.setText(events.get(i).end);
+        }
+
+        if (!ampm.isEmpty()) {
+            switch (ampm.get(0)) {
+                case 0:
+                    eventViewHolder.eventStartTime.append(" AM");
+                    break;
+                case 1:
+                    eventViewHolder.eventStartTime.append(" PM");
+                    break;
+            }
+            if (ampm.size() == 2) {
+                switch (ampm.get(1)) {
+                    case 0:
+                        eventViewHolder.eventEndTime.append(" AM");
+                        break;
+                    case 1:
+                        eventViewHolder.eventEndTime.append(" PM");
+                        break;
+                }
+            }
         }
 
         final int item = i;
