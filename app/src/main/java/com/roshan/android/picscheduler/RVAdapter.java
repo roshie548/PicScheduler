@@ -50,9 +50,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
             @Override
             public void onClick(View view) {
                 List<Integer> testTwo = new ArrayList<>();
-                testTwo.add(Calendar.AM);
-                testTwo.add(Calendar.AM);
-                createEvent(events.get(item).days, testTwo);
+                createEvent(events.get(item).days, events.get(item).ampm, events.get(item).startHour,
+                        events.get(item).startMinutes, events.get(item).endHour, events.get(item).endMinutes);
             }
         });
     }
@@ -77,16 +76,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
         }
     }
 
-    private void createEvent(List<Integer> days, List<Integer> ampm) {
-        Calendar now = Calendar.getInstance();
+    private void createEvent(List<Integer> days, List<Integer> ampm, int startHour, int startMinutes, int endHour, int endMinutes) {
 
-        int weekday = now.get(Calendar.DAY_OF_WEEK);
+        //TODO: Configure times
+        Calendar beginTime = Calendar.getInstance();
+        Calendar endTime = Calendar.getInstance();
+
+        int weekday = beginTime.get(Calendar.DAY_OF_WEEK);
         String byDay = "";
 
         if (!days.isEmpty()) {
             if (weekday != days.get(0)) {
                 int targetDay = (Calendar.SATURDAY - weekday + 7 - Math.abs(Calendar.SATURDAY - days.get(0))) % 7;
-                now.add(Calendar.DAY_OF_YEAR, targetDay);
+                beginTime.add(Calendar.DAY_OF_YEAR, targetDay);
+                endTime.add(Calendar.DAY_OF_YEAR, targetDay);
             }
             for (int i = 0; i < days.size(); i++) {
                 switch (days.get(i)) {
@@ -120,20 +123,30 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.EventViewHolder> {
         }
 
 
+        beginTime.set(Calendar.HOUR, startHour);
+        beginTime.set(Calendar.MINUTE, startMinutes);
+        if (!ampm.isEmpty()) {
+            beginTime.set(Calendar.AM_PM, ampm.get(0));
 
-        //Start time of event
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(Calendar.AM_PM, ampm.get(0));
+        }
 
-        //End time of event
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(Calendar.AM_PM, ampm.get(1));
-//        endTime.set(Calendar.HOUR)
+        if (endHour != -1 && endMinutes != -1) {
+            endTime.set(Calendar.HOUR, endHour);
+            endTime.set(Calendar.MINUTE, endMinutes);
+        } else {
+            endTime.set(Calendar.HOUR, startHour + 1);
+            endTime.set(Calendar.HOUR, startMinutes);
+        }
 
-        endTime.set(2019, 1, 8, 8, 30);
+        if (ampm.size() != 2) {
+            endTime.set(Calendar.AM_PM, ampm.get(0));
+        } else {
+            endTime.set(Calendar.AM_PM, ampm.get(1));
+        }
+
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, now.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
                 .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
                 .putExtra(CalendarContract.Events.TITLE, "test");
         if (!byDay.isEmpty()) {

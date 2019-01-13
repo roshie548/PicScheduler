@@ -143,11 +143,11 @@ public class ImageDetectActivity extends AppCompatActivity {
                                 }
                                 if (!times.isEmpty()) {
                                     if (times.size() == 2) {
-                                        events.add(new  Event("test", times.get(0), times.get(1), scheduleDays));
+                                        events.add(new  Event("test", times.get(0), times.get(1), scheduleDays, ampm));
                                     } else if (times.size() == 1) {
-                                        events.add(new Event("test", times.get(0), null, scheduleDays));
+                                        events.add(new Event("test", times.get(0), null, scheduleDays, ampm));
                                     } else {
-                                        events.add(new Event("test", null, null, scheduleDays));
+                                        events.add(new Event("test", null, null, scheduleDays, ampm));
                                     }
                                 }
                             }
@@ -179,15 +179,17 @@ public class ImageDetectActivity extends AppCompatActivity {
         List<Integer> days;
         int startHour;
         int startMinutes;
-        int endHour;
-        int endMinutes;
+        int endHour = -1;
+        int endMinutes = -1;
+        List<Integer> ampm;
 
         //TODO: Optional parameters?
-        Event(String name, String start, String end, List<Integer> days) {
+        Event(String name, String start, String end, List<Integer> days, List<Integer> ampm) {
             this.name = name;
             this.start = start;
             this.end = end;
             this.days = days;
+            this.ampm = ampm;
 
             if (start != null) {
                 int i = start.indexOf(":");
