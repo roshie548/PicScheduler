@@ -3,18 +3,12 @@ package com.roshan.android.picscheduler;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.net.Uri;
-import android.provider.CalendarContract;
+
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,7 +18,6 @@ import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
-import com.google.firebase.ml.vision.text.RecognizedLanguage;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -111,7 +104,13 @@ public class ImageDetectActivity extends AppCompatActivity {
                                         int secondIndex = elementText.lastIndexOf(":");
                                         int secondEndIndex = secondIndex + 3;
                                         if (firstEndIndex <= elementText.length()) {
-                                            times.add(elementText.substring(0, firstEndIndex));
+                                            if (elementText.contains("-") && firstIndex == secondIndex) {
+                                                if (elementText.indexOf("-") < firstIndex) {
+                                                    times.add(elementText.substring(elementText.indexOf("-")+1, firstEndIndex));
+                                                }
+                                            } else {
+                                                times.add(elementText.substring(0, firstEndIndex));
+                                            }
                                         }
                                         if (elementText.contains("-") && firstIndex != secondIndex && secondEndIndex <= elementText.length()) {
                                             int indexHyphen = elementText.indexOf("-");
