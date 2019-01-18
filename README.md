@@ -1,3 +1,3 @@
 # PicScheduler
 
-An app which, upon taking a picture of a schedule, will automatically import events into your Google Calendar.
+An Android app to make the process of adding class schedules to your calendar by using OCR
